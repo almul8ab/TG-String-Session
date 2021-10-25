@@ -12,17 +12,14 @@ from pyrogram.errors import (
     PhoneCodeInvalid, PhoneCodeExpired
 )
 
-API_TEXT = """Hi, {}.
-This is Pyrogram's String Session Generator Bot. I will generate String Session of your Telegram Account.
-
-By @Discovery_Updates
-
-Now send your `API_ID` same as `APP_ID` to Start Generating Session."""
-HASH_TEXT = "Now send your `API_HASH`.\n\nPress /cancel to Cancel Task."
+API_TEXT = """Hi, {}.اهلا وسهلا بك في بوت استخراج الكود سترنك الخاص بسورس جيبثون
+ركز معي
+الان ارسل لي `API_ID` ارسل `APP_ID` وانتضر."""
+HASH_TEXT = "الان ارسل لي `API_HASH`.\n\nاو اضغط /cancel للخروج."
 PHONE_NUMBER_TEXT = (
-    "Now send your Telegram account's Phone number in International Format. \n"
-    "Including Country code. Example: **+14154566376**\n\n"
-    "Press /cancel to Cancel Task."
+    "الان ارسل لي رقم موبايلك الي رابط عليه حسابك التليجرام مع رمز الدولة على سبيل المثال. \n"
+    "**+14154566376**\n\n"
+    "او اضغظ /cancel لأنهاء الاستخراج."
 )
 
 @bot.on_message(filters.private & filters.command("start"))
@@ -36,14 +33,14 @@ async def genStr(_, msg: Message):
     try:
         check_api = int(api.text)
     except Exception:
-        await msg.reply("`API_ID` is Invalid.\nPress /start to Start again.")
+        await msg.reply("`API_ID` خطأ.\nارجع دوس /start وعيد من جديد.")
         return
     api_id = api.text
     hash = await bot.ask(chat.id, HASH_TEXT)
     if await is_cancel(msg, hash.text):
         return
     if not len(hash.text) >= 30:
-        await msg.reply("`API_HASH` is Invalid.\nPress /start to Start again.")
+        await msg.reply("`API_HASH` خطأ.\ارجع دوس /start وعيد من جديد.")
         return
     api_hash = hash.text
     while True:
@@ -61,7 +58,7 @@ async def genStr(_, msg: Message):
     try:
         client = Client("my_account", api_id=api_id, api_hash=api_hash)
     except Exception as e:
-        await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`\nPress /start to Start again.")
+        await bot.send_message(chat.id ,f"**خطا ابني اتأكد من الاكواد:** `{str(e)}`\nارجع دوس /start وعيد الشغل من جديد.")
         return
     try:
         await client.connect()
@@ -72,20 +69,20 @@ async def genStr(_, msg: Message):
         code = await client.send_code(phone)
         await asyncio.sleep(1)
     except FloodWait as e:
-        await msg.reply(f"You have Floodwait of {e.x} Seconds")
+        await msg.reply(f"فحطتني هواي تكرر انتضر {e.x} ثانية")
         return
     except ApiIdInvalid:
-        await msg.reply("API ID and API Hash are Invalid.\n\nPress /start to Start again.")
+        await msg.reply("API ID و API Hash ثنينهن خطأ.\n\nدوس /start وارجع من جديد.")
         return
     except PhoneNumberInvalid:
-        await msg.reply("Your Phone Number is Invalid.\n\nPress /start to Start again.")
+        await msg.reply("رقم موبايلك غلط تأكد منه لاتستعجل مراح يطير البوت.\n\nارجع دوس /start وابدي شغل من جديد حجي.")
         return
     try:
         otp = await bot.ask(
-            chat.id, ("An OTP is sent to your phone number, "
-                      "Please enter OTP in `1 2 3 4 5` format. __(Space between each numbers!)__ \n\n"
-                      "If Bot not sending OTP then try /restart and Start Task again with /start command to Bot.\n"
-                      "Press /cancel to Cancel."), timeout=300)
+            chat.id, ("اجاك كود ع التلي مالتك مكون من ٥ ارقام دزهن هنا, "
+                      "بس باع من تكتبهن خلي بين كل رقم مسافة مثل  `1 2 3 4 5` \n\n"
+                      "هسه شجاك وصلت للنهاية وخطأت ارجع دوس /restart وابدي شغل من جديد عزيزي.\n"
+                      "دوس /cancel to حتى تنهي كلشي."), timeout=300)
 
     except TimeoutError:
         await msg.reply("Time limit reached of 5 min.\nPress /start to Start again.")
@@ -96,16 +93,16 @@ async def genStr(_, msg: Message):
     try:
         await client.sign_in(phone, code.phone_code_hash, phone_code=' '.join(str(otp_code)))
     except PhoneCodeInvalid:
-        await msg.reply("Invalid Code.\n\nPress /start to Start again.")
+        await msg.reply("الكود خطأ لصير اثول.\n\nدوس /start وارجع عيد من جديد.")
         return
     except PhoneCodeExpired:
-        await msg.reply("Code is Expired.\n\nPress /start to Start again.")
+        await msg.reply("الكود صار اكسباير يعني انتهت صلاحيته.\n\nدوس /start وارجع عيد من جديد.")
         return
     except SessionPasswordNeeded:
         try:
             two_step_code = await bot.ask(
                 chat.id, 
-                "Your account have Two-Step Verification.\nPlease enter your Password.\n\nPress /cancel to Cancel.",
+                "حسابك مسويله تأكد بخطوتين مو ؟.\nلعد دزلي الباسورد ولتحجي حجي زايد.\n\nدوس /cancel حتى تنهي شغلك.",
                 timeout=300
             )
         except TimeoutError:
@@ -117,7 +114,7 @@ async def genStr(_, msg: Message):
         try:
             await client.check_password(new_code)
         except Exception as e:
-            await msg.reply(f"**ERROR:** `{str(e)}`")
+            await msg.reply(f"**خطااااا:** `{str(e)}`")
             return
     except Exception as e:
         await bot.send_message(chat.id ,f"**ERROR:** `{str(e)}`")
@@ -126,9 +123,9 @@ async def genStr(_, msg: Message):
         session_string = await client.export_session_string()
         await client.send_message("me", f"#PYROGRAM #STRING_SESSION\n\n```{session_string}``` \n\nBy [@StringSessionGen_Bot](tg://openmessage?user_id=1472531255) \nA Bot By @Discovery_Updates")
         await client.disconnect()
-        text = "String Session is Successfully Generated.\nClick on Below Button."
+        text = "تمت بحمد الله تعالى انتهينا من الاستخراج.\nدوس على الزر حتى يوديك للكود."
         reply_markup = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text="Show String Session", url=f"tg://openmessage?user_id={chat.id}")]]
+            [[InlineKeyboardButton(text="اريد اشوف الكود", url=f"tg://openmessage?user_id={chat.id}")]]
         )
         await bot.send_message(chat.id, text, reply_markup=reply_markup)
     except Exception as e:
@@ -159,11 +156,11 @@ Must Join Channel for Bot Updates !!
     reply_markup = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton('Support Group', url='https://t.me/linux_repo'),
-                InlineKeyboardButton('Developer', url='https://t.me/AbirHasan2005')
+                InlineKeyboardButton('كروب الدعم', url='https://t.me/jepthon1'),
+                InlineKeyboardButton('🙋🏻المطور', url='https://t.me/lMl10l')
             ],
             [
-                InlineKeyboardButton('Bots Updates Channel', url='https://t.me/Discovery_Updates'),
+                InlineKeyboardButton('قناة التحديثات 🧸', url='https://t.me/Jepthon'),
             ]
         ]
     )
@@ -172,7 +169,7 @@ Must Join Channel for Bot Updates !!
 
 async def is_cancel(msg: Message, text: str):
     if text.startswith("/cancel"):
-        await msg.reply("Process Cancelled.")
+        await msg.reply("كافي چلبت دطلع.")
         return True
     return False
 
