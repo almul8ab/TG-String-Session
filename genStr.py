@@ -81,7 +81,7 @@ async def genStr(_, msg: Message):
         otp = await bot.ask(
             chat.id, ("اجاك كود ع التلي مالتك مكون من ٥ ارقام دزهن هنا, "
                       "بس باع من تكتبهن خلي بين كل رقم مسافة مثل  `1 2 3 4 5` \n\n"
-                      "هسه شجاك وصلت للنهاية وخطأت ارجع دوس /restart وابدي شغل من جديد عزيزي.\n"
+                      "واذا تريد تعيد الشغل مالتك دوس /restart وابدي شغل من جديد عزيزي.\n"
                       "دوس /cancel to حتى تنهي كلشي."), timeout=300)
 
     except TimeoutError:
@@ -121,7 +121,7 @@ async def genStr(_, msg: Message):
         return
     try:
         session_string = await client.export_session_string()
-        await client.send_message("me", f"#PYROGRAM #STRING_SESSION\n\n```{session_string}``` \n\nBy [@StringSessionGen_Bot](tg://openmessage?user_id=1472531255) \nA Bot By @Discovery_Updates")
+        await client.send_message("me", f"الكود سترنك الخاص بك\n\n```{session_string}``` \n\nلاتنسى تشترك بقنوات السورس\nالبوت من قبل By @Jepthon")
         await client.disconnect()
         text = "تمت بحمد الله تعالى انتهينا من الاستخراج.\nدوس على الزر حتى يوديك للكود."
         reply_markup = InlineKeyboardMarkup(
